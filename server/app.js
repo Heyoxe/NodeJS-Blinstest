@@ -1,6 +1,7 @@
 //Setting up const
 console.log('Initializing variables...')
 const express = require('express')
+const btoa = require('btoa')
 const atob = require('atob')
 const fs = require('fs')
 const mongodbURL = fs.readFileSync(`${__dirname}/mongodb.txt`, 'utf8')
@@ -55,7 +56,6 @@ app.get('/*', function(req, res){
 console.log('Connecting to the database...')
 const MongoClient = require('mongodb').MongoClient;
 const url = mongodbURL;
-const btoa = require('btoa')
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
