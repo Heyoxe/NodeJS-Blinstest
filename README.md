@@ -1,5 +1,6 @@
 # NodeJS-Blinstest
-Online multiplayer Blindtest app made wiht NodeJS
+Online multiplayer Blindtest app made wiht NodeJS.
+
 Create a file named `mongodb.txt` in `server` and put the URI to the Database inside.
 ## Dependecies
 - atob: https://www.npmjs.com/package/atob
