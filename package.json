@@ -1,0 +1,26 @@
+{
+  "name": "blindtest_v2",
+  "version": "1.0.0",
+  "description": "Online Blindtest with Express 4, VueJS and Firebase",
+  "main": "index.js",
+  "scripts": {
+    "server": "node server/app.js",
+    "dev": "nodemon server/app.js"
+  },
+  "author": "Heyoxe",
+  "license": "ISC",
+  "dependencies": {
+    "atob": "^2.1.2",
+    "btoa": "^1.2.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "get-mp3-duration": "^1.0.0",
+    "ip": "^1.1.5",
+    "jquery.fancytree": "^2.31.0",
+    "mongodb": "^2.2.33",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}

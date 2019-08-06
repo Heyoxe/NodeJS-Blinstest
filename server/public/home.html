@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Blindtest - Home</title>
+        <link rel="stylesheet" href="/public/style.css">
+    </head>
+    <body>
+
+        <div class="topnav">
+            <a class="active" href="/">Home</a>
+            <!-- <a href="/settings">Settings</a> -->
+        </div>
+        <div class="title">
+            <div class="center" id="title">Waiting...</div>
+        </div>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+            let socket = io(`${document.URL}`)
+            //When the socket recives something, analyze data and take appopriate action
+            socket.on('broadcast', async function(data) {
+                if (data.length > 3) {
+                    //If data > 2 then it's a song that's about to be played
+                    document.getElementById("title").innerHTML = data[0];
+                    await sleep(1500)
+                    let path = data[1]
+                    var audio = new Audio(path)
+                    audio.currentTime = data[2]
+                    audio.play()
+                    audio.loop = true
+                    var i;
+                    for (i = data[3]; i > -1; i--) {
+                        document.getElementById("title").innerHTML = i.toString();
+                        await sleep(1000)
+                    }
+                    await sleep(data[4] * 1000)
+                    audio.pause()
+                    audio = {}
+                } else {
+                    //Else, it's the answer
+                    document.getElementById("title").innerHTML = data[0] + ' - ' + data[1]
+                    console.log(data[0] + ' - ' + data[1])
+                    await sleep(data[2] * 1000)
+                    document.getElementById("title").innerHTML = "";
+                }
+            })
+        </script>
+    </body>
+</html>
