@@ -34,13 +34,14 @@
                     audio.play()
                     audio.loop = true
                     var i;
-                    for (i = data[3]; i > -1; i--) {
+                    for (i = data[3]; i > 0; i--) {
                         document.getElementById("title").innerHTML = i.toString();
                         await sleep(1000)
                     }
+                    document.getElementById("title").innerHTML = 0;
+                    await sleep(2000)
                     await sleep(data[4] * 1000)
                     audio.pause()
-                    audio = {}
                 } else {
                     //Else, it's the answer
                     document.getElementById("title").innerHTML = data[0] + ' - ' + data[1]
