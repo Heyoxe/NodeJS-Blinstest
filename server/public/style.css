@@ -37,7 +37,6 @@ body {
     margin-left: 0; /* margin is -0.5 * dimension */
     margin-top: 0; 
     text-align: center;
-    white-space: nowrap
     font-family: Segoe UI;
     font-style: normal;
     font-weight: bold;
