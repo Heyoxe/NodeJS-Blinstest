@@ -27,9 +27,9 @@
                 if (data.length > 3) {
                     //If data > 2 then it's a song that's about to be played
                     document.getElementById("title").innerHTML = data[0];
-                    await sleep(1500)
                     let path = data[1]
                     var audio = new Audio(path)
+                    await sleep(1500)
                     audio.currentTime = data[2]
                     audio.play()
                     audio.loop = true

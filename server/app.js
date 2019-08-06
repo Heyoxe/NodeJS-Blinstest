@@ -27,7 +27,7 @@ app.get('*', (req, res) => {
         const file = `${__dirname}/public/home.html`;
         res.sendFile(file, (err) => {
             if (err) {
-                res.sendFile(`${__dirname}/public/error.html`)
+                //res.sendFile(`${__dirname}/public/error.html`)
             }
         })
     } else if (url.startsWith('/public/audio')) {
@@ -35,7 +35,7 @@ app.get('*', (req, res) => {
         const file = `${__dirname}/public/audio/${atob(data[3])}/${atob(data[4])}/${atob(data[5])}.mp3`;
         res.sendFile(file, (err) => {
             if (err) {
-                res.sendFile(`${__dirname}/public/error.html`)
+                //res.sendFile(`${__dirname}/public/error.html`)
             }
         })
     } else {
