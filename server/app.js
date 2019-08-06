@@ -123,7 +123,7 @@ setInterval(async function(){
     await sleep(2000 + totalTime * 1000)
     console.log(`New song played: ${element.name} - ${song[0]}`)
     io.emit('broadcast', [element.name, song[0], infoDuration])
-}, totalTime * 1000 + infoDuration * 2 * 1000);
+}, totalTime * 1000 + infoDuration * 2 * 1000 - 2500);
 
 /*
 io.on('connection', socket => {
