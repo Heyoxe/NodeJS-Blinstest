@@ -21,36 +21,32 @@ console.log(`Server Started on ${ip.address()}:${port}`)
 
 //Routes (or whatever it's called)
 console.log('Creating routes...')
-app.get('/public/audio/*', function(req, res){
-    let data = req.params[0].split('/')
-    const file = `${__dirname}/public/audio/${atob(data[0])}/${atob(data[1])}/${atob(data[2])}.mp3`;
-    res.sendFile(file, (err) => {
-        if (err) {
-            res.sendFile(`${__dirname}/public/error.html`)
-        }
-    })
+app.get('*', (req, res) => {
+    let url = req.params[0]
+    if (url === '/') {
+        const file = `${__dirname}/public/home.html`;
+        res.sendFile(file, (err) => {
+            if (err) {
+                res.sendFile(`${__dirname}/public/error.html`)
+            }
+        })
+    } else if (url.startsWith('/public/audio')) {
+        let data = url.split('/')
+        const file = `${__dirname}/public/audio/${atob(data[3])}/${atob(data[4])}/${atob(data[5])}.mp3`;
+        res.sendFile(file, (err) => {
+            if (err) {
+                res.sendFile(`${__dirname}/public/error.html`)
+            }
+        })
+    } else {
+        const file = `${__dirname}${req.originalUrl}`;
+        res.sendFile(file, (err) => {
+            if (err) {
+                res.sendFile(`${__dirname}/public/error.html`)
+            }
+        })
+    }
 })
-
-app.get('/', function(req, res){
-    const file = `${__dirname}/public/home.html`;
-    res.sendFile(file, (err) => {
-        if (err) {
-            res.sendFile(`${__dirname}/public/error.html`)
-        }
-    })
-})
-
-
-app.get('/*', function(req, res){
-    const file = `${__dirname}${req.originalUrl}`;
-    res.sendFile(file, (err) => {
-        if (err) {
-            res.sendFile(`${__dirname}/public/error.html`)
-        }
-    })
-});
-
-
 
 // Connecting to the database
 console.log('Connecting to the database...')
@@ -111,11 +107,6 @@ setInterval(async function(){
     const getMP3Duration = require('get-mp3-duration')
     const buffer = fs.readFileSync(serverPath)
     const duration = getMP3Duration(buffer)
-    if (typeof Duration !== 'undefined') {
-        console.log(duration)
-    } else {
-        console.log('Error while calculating duration')
-    }
     */
     
     io.emit('broadcast', [element.genre, path, startTime, totalTime, infoDuration])
