@@ -24,11 +24,13 @@
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script>
+            let today = new Date();
+            let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
             let socket = io(`${document.URL}`)
-            console.log('Connected to the server.')
+            console.log(`Connected to the server at ${time}`)
             //When the socket recives something, analyze data and take appopriate action
             socket.on('broadcast', async function(data) {
                 if (data.length > 3) {
@@ -42,6 +44,7 @@
                     audio.play()
                     audio.loop = true
                     var i;
+                    console.log(data[0])
                     for (i = data[3]; i > 0; i--) {
                         document.getElementById("title").innerHTML = i.toString();
                         await sleep(1000)
