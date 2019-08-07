@@ -59,46 +59,44 @@ let allDocuments
 let totalTime = 20
 let infoDuration = 5
 let lastElements = new Array()
-
-function selectElement(data) {
-    let result = data[Math.floor(Math.random() * data.length)]
-    let selectedIndex = lastElements.indexOf(result)
-    if ((selectedIndex < (data.length / 2)) && (selectedIndex > -1)) {
-        result = selectElement(data)
-    } else {
-        if (lastElements.length == data.length) {
-            lastElements.splice((lastElements.length - 1), 1)
-        }
-        arrayInsert(lastElements, 0, result)
-        return result
-    }
-}
+let element
+let song
 
 function arrayInsert(array, index, element) {
     return array.splice(index, 0, element)
 }
 
-async function fetchData() {
+function selectElement(data) {
+    console.log('Selecting song...')
+    return (data[Math.floor(Math.random() * data.length)])
+}
+
+function fetchData() {
+    console.log('Fetching Data...')
     MongoClient.connect(url, function(err, db) {
         db.collection('songs').find().toArray(function (error, res) {
             allDocuments = res
+            element = selectElement(allDocuments)
+            song = element.songs[Math.floor(Math.random() * element.songs.length)]
+            while ((lastElements.indexOf(element.name) < (allDocuments.length / 2)) && ((lastElements.indexOf(element.name) > -1))) {
+                console.log(`Song already used in the last ${allDocuments.length / 2} songs, selecting a new song`)
+                element = selectElement(allDocuments)
+                song = element.songs[Math.floor(Math.random() * element.songs.length)]
+            }
+            arrayInsert(lastElements, 0, element.name)
         })
         db.collection('settings').find().toArray(function (error, res) {
             totalTime = res[0].extractDuration
             infoDuration = res[0].infoDuration
         })
     })
-    console.log('Fetching Data...')
 }
 fetchData()
 
 //Broadcast music data to all client, updateDatabase (in case of change) and then broadcast the answer. Every 12s + totalTime
 console.log('Starting Blindtest...')
 setInterval(async function(){
-    let element = selectElement(allDocuments)
     //let element = allDocuments[Math.floor(Math.random() * allDocuments.length)]
-    let song = element.songs[Math.floor(Math.random() * element.songs.length)]
-    
     let path = `/public/audio/${btoa(element.genre)}/${btoa(element.name)}/${btoa(song[0])}/source`
     //let serverPath = `${__dirname}/public/audio/` + element.genre + '/' + element.name + '/' + song[0] + '.mp3'
     let startTime = Number(song[1][Math.floor(Math.random() * song[1].length)])
@@ -109,11 +107,12 @@ setInterval(async function(){
     const duration = getMP3Duration(buffer)
     */
     
-    io.emit('broadcast', [element.genre, path, startTime, totalTime, infoDuration])
+    let answer = [element.name, song[0], infoDuration]
     fetchData()
+    io.emit('broadcast', [element.genre, path, startTime, totalTime, infoDuration])
     await sleep(2000 + totalTime * 1000)
-    console.log(`New song played: ${element.name} - ${song[0]}`)
-    io.emit('broadcast', [element.name, song[0], infoDuration])
+    console.log(`New song played: ${answer[0]} - ${answer[1]}`)
+    io.emit('broadcast', answer)
 }, totalTime * 1000 + infoDuration * 2 * 1000 - 2500);
 
 /*
@@ -123,3 +122,5 @@ io.on('connection', socket => {
     })
 })
 */
+
+//`http://localhost/public/audio/${btoa("Anime")}/${btoa("Aldnoah.Zero")}/${btoa("aLIEz")}/source`

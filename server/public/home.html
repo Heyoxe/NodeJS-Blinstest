@@ -6,12 +6,18 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Blindtest - Home</title>
         <link rel="stylesheet" href="/public/style.css">
+        <script type="text/JavaScript" src="public/MediaElementAmplifier.js"></script>
+        <script type="text/JavaScript">
+            document.addEventListener("DOMContentLoaded", function(event) {
+              var amp = new MediaElementAmplifier(document.getElementById('player'));
+              amp.setVolume(0.5, 1);
+            });
+          </script>
     </head>
     <body>
-
+        <audio preload="auto" id="player" src=""></audio>
         <div class="topnav">
             <a class="active" href="/">Home</a>
-            <!-- <a href="/settings">Settings</a> -->
         </div>
         <div class="title">
             <div class="center" id="title">Waiting...</div>
@@ -22,13 +28,15 @@
                 return new Promise(resolve => setTimeout(resolve, ms));
             }
             let socket = io(`${document.URL}`)
+            console.log('Connected to the server.')
             //When the socket recives something, analyze data and take appopriate action
             socket.on('broadcast', async function(data) {
                 if (data.length > 3) {
                     //If data > 2 then it's a song that's about to be played
                     document.getElementById("title").innerHTML = data[0];
                     let path = data[1]
-                    var audio = new Audio(path)
+                    document.getElementById('player').src = path
+                    var audio = document.getElementById('player')
                     await sleep(1500)
                     audio.currentTime = data[2]
                     audio.play()
@@ -42,7 +50,7 @@
                     await sleep(data[4] * 1000)
                     audio.pause()
                 } else {
-                    //Else, it's the answer
+                    //Else, it's an answer
                     document.getElementById("title").innerHTML = data[0] + ' - ' + data[1]
                     console.log(data[0] + ' - ' + data[1])
                     await sleep(data[2] * 1000)
@@ -52,3 +60,4 @@
         </script>
     </body>
 </html>
+
