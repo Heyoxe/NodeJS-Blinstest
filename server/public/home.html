@@ -24,8 +24,22 @@
         </div>
         <script src="/socket.io/socket.io.js"></script>
         <script>
+            if (window.addEventListener) {
+                let pushedKeys = []
+                let konamiCode = "38,38,40,40,37,39,37,39,66,65"
+                let konami = true
+                window.addEventListener("keydown", (e) => {
+                    pushedKeys.push(e.keyCode)
+                    if ((pushedKeys.toString().indexOf(konamiCode) >= 0) && konami) {
+                        console.log("J'ai pas d'idée")
+                        konami = false
+                        var konamiAudio = new Audio(`/public/audio/${btoa('Game')}/${btoa('Konami')}/${btoa('Code')}/source`)
+                        konamiAudio.play()
+                    }
+                }, true)
+            }
             let today = new Date();
-            let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            let time = today.getHours() + ":" + (today.getMinutes()<10?'0':'') + today.getMinutes() + ":" + today.getSeconds();
             function sleep(ms) {
                 return new Promise(resolve => setTimeout(resolve, ms));
             }

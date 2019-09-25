@@ -74,16 +74,19 @@ function selectElement(data) {
 function fetchData() {
     console.log('Fetching Data...')
     MongoClient.connect(url, function(err, db) {
-        db.collection('songs').find().toArray(function (error, res) {
+        db.collection('songs').find({}).toArray(function (error, res) {
             allDocuments = res
             element = selectElement(allDocuments)
-            song = element.songs[Math.floor(Math.random() * element.songs.length)]
-            while ((lastElements.indexOf(element.name) < (allDocuments.length / 2)) && ((lastElements.indexOf(element.name) > -1))) {
+            song = element.songs[Math.floor(Math.random() * element.songs.length)] 
+            while ((lastElements.indexOf(element.name)) < (allDocuments.length / 2) && ((lastElements.indexOf(element.name) > -1))) {
                 console.log(`Song already used in the last ${allDocuments.length / 2} songs, selecting a new song`)
                 element = selectElement(allDocuments)
                 song = element.songs[Math.floor(Math.random() * element.songs.length)]
             }
             arrayInsert(lastElements, 0, element.name)
+            if (lastElements.length > 200) {
+                lastElements.splice(200, 1)
+            };
         })
         db.collection('settings').find().toArray(function (error, res) {
             totalTime = res[0].extractDuration
